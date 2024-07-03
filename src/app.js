@@ -6,13 +6,16 @@ const {
 	waitRun,
 	receiveMessage,
 	GenerateImage,
-} = require("./ai/ai");
+} = require("./ai");
 const { connectToDatabase, getDb } = require("./util/database");
 const { ObjectId } = require("mongodb");
+const axios = require("axios");
+const sharp = require("sharp");
+const path = require("path");
+const fs = require("fs");
+const s3 = require("./util/s3");
 
 const app = express();
-
-require("dotenv").config();
 
 app.use(cors());
 app.use(express.json());
@@ -30,19 +33,6 @@ connectToDatabase()
 
 app.get("/", (req, res) => {
 	res.send("");
-});
-
-const axios = require("axios");
-const sharp = require("sharp");
-const path = require("path");
-const fs = require("fs");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const s3 = new S3Client({
-	region: "ap-northeast-2",
-	credentials: {
-		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-	},
 });
 
 app.post("/gpt", async (req, res) => {
